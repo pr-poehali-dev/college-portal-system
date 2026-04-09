@@ -1,0 +1,49 @@
+CREATE TABLE IF NOT EXISTS groups (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(50) NOT NULL UNIQUE,
+  year INT NOT NULL DEFAULT 1,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS users (
+  id SERIAL PRIMARY KEY,
+  login VARCHAR(100) NOT NULL UNIQUE,
+  password_hash VARCHAR(255) NOT NULL,
+  full_name VARCHAR(255) NOT NULL,
+  role VARCHAR(20) NOT NULL CHECK (role IN ('student','teacher','admin')),
+  group_id INT REFERENCES groups(id),
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS schedule (
+  id SERIAL PRIMARY KEY,
+  teacher_id INT NOT NULL REFERENCES users(id),
+  group_id INT NOT NULL REFERENCES groups(id),
+  subject VARCHAR(255) NOT NULL,
+  lesson_type VARCHAR(50) NOT NULL DEFAULT 'Лекция',
+  room VARCHAR(50) NOT NULL DEFAULT '',
+  day_of_week INT NOT NULL CHECK (day_of_week BETWEEN 0 AND 6),
+  time_start VARCHAR(10) NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS chats (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(255) NOT NULL,
+  created_by INT NOT NULL REFERENCES users(id),
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS chat_members (
+  chat_id INT NOT NULL REFERENCES chats(id),
+  user_id INT NOT NULL REFERENCES users(id),
+  PRIMARY KEY (chat_id, user_id)
+);
+
+CREATE TABLE IF NOT EXISTS messages (
+  id SERIAL PRIMARY KEY,
+  chat_id INT NOT NULL REFERENCES chats(id),
+  user_id INT NOT NULL REFERENCES users(id),
+  text TEXT NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);

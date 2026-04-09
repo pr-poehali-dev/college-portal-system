@@ -1,7 +1,8 @@
 import { Role } from '../App';
+import { AuthUser } from '@/hooks/useAuth';
 import Icon from '@/components/ui/icon';
 
-interface Props { role: Role }
+interface Props { role: Role; user: AuthUser }
 
 const studentStats = [
   { label: 'Курсов активно', value: '6', icon: 'BookOpen', color: '#7c5cfc' },
@@ -37,9 +38,9 @@ const courses = [
   { name: 'Программирование', teacher: 'Козлов Д.А.', progress: 85, color: '#f72585' },
 ];
 
-export default function DashboardPage({ role }: Props) {
+export default function DashboardPage({ role, user }: Props) {
   const stats = role === 'student' ? studentStats : role === 'teacher' ? teacherStats : adminStats;
-  const greeting = role === 'student' ? 'Алексей' : role === 'teacher' ? 'Марина Игоревна' : 'Администратор';
+  const greeting = user.full_name.split(' ')[0];
 
   return (
     <div className="p-6 max-w-5xl mx-auto">

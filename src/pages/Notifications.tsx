@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { Role } from '../App';
+import { AuthUser } from '@/hooks/useAuth';
 import Icon from '@/components/ui/icon';
 
-interface Props { role: Role }
+interface Props { role: Role; user: AuthUser }
 
 type NotifType = 'grade' | 'task' | 'message' | 'event' | 'system';
 
@@ -35,7 +36,7 @@ const typeLabels: Record<NotifType, string> = {
   system: 'Система',
 };
 
-export default function NotificationsPage({ role }: Props) {
+export default function NotificationsPage({ role, user: _user }: Props) {
   const [items, setItems] = useState(notifications);
   const [filter, setFilter] = useState<NotifType | 'all'>('all');
 

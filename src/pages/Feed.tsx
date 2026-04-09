@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { Role } from '../App';
+import { AuthUser } from '@/hooks/useAuth';
 import Icon from '@/components/ui/icon';
 
-interface Props { role: Role }
+interface Props { role: Role; user: AuthUser }
 
 const posts = [
   {
@@ -59,7 +60,7 @@ const posts = [
   },
 ];
 
-export default function FeedPage({ role }: Props) {
+export default function FeedPage({ role, user: _user }: Props) {
   const [liked, setLiked] = useState<Set<number>>(new Set());
   const [filter, setFilter] = useState('all');
 

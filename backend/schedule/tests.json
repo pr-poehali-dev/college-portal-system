@@ -1,0 +1,12 @@
+{
+  "tests": [
+    {
+      "name": "Get all schedule",
+      "method": "GET",
+      "path": "/",
+      "expectedStatus": 200,
+      "expectedBody": {"lessons": []},
+      "bodyMatcher": "partial"
+    }
+  ]
+}

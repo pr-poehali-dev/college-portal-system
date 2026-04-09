@@ -1,7 +1,8 @@
 import { Role } from '../App';
+import { AuthUser } from '@/hooks/useAuth';
 import Icon from '@/components/ui/icon';
 
-interface Props { role: Role }
+interface Props { role: Role; user: AuthUser }
 
 const studentGrades = [
   { subject: 'Высшая математика', teacher: 'Петров А.В.', grade: 4.5, items: [5,4,4,5,4], type: 'Экзамен', color: '#7c5cfc' },
@@ -35,7 +36,7 @@ function GradeCircle({ value }: { value: number }) {
   );
 }
 
-export default function GradesPage({ role }: Props) {
+export default function GradesPage({ role, user: _user }: Props) {
   const avg = role === 'student'
     ? (studentGrades.reduce((s, g) => s + g.grade, 0) / studentGrades.length).toFixed(2)
     : null;

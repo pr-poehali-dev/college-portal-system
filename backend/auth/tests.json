@@ -1,0 +1,30 @@
+{
+  "tests": [
+    {
+      "name": "Login admin success",
+      "method": "POST",
+      "path": "/",
+      "body": {"action": "login", "login": "admin", "password": "admin123"},
+      "expectedStatus": 200,
+      "expectedBody": {"user": {"role": "admin"}},
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "Login wrong password",
+      "method": "POST",
+      "path": "/",
+      "body": {"action": "login", "login": "admin", "password": "wrong"},
+      "expectedStatus": 401,
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "Get groups",
+      "method": "POST",
+      "path": "/",
+      "body": {"action": "groups"},
+      "expectedStatus": 200,
+      "expectedBody": {"groups": []},
+      "bodyMatcher": "partial"
+    }
+  ]
+}
