@@ -111,6 +111,52 @@ def handler(event: dict, context) -> dict:
         conn.close()
         return resp(201, {'id': new_id, 'message': 'Пользователь создан'})
 
+    if action == 'users_update':
+        if not user or user['role'] != 'admin':
+            return resp(403, {'error': 'Только администратор'})
+        uid = body.get('id')
+        if not uid:
+            return resp(400, {'error': 'Укажите id'})
+        full_name = body.get('full_name', '').strip()
+        role_val = body.get('role', 'student')
+        group_id = body.get('group_id') or None
+        new_password = body.get('password', '').strip()
+        if not full_name:
+            return resp(400, {'error': 'Укажите ФИО'})
+        if role_val not in ('student', 'teacher', 'admin'):
+            return resp(400, {'error': 'Неверная роль'})
+        conn = get_conn()
+        cur = conn.cursor()
+        if new_password:
+            cur.execute(
+                f"UPDATE {SCHEMA}.users SET full_name=%s, role=%s, group_id=%s, password_hash=%s WHERE id=%s",
+                (full_name, role_val, group_id, new_password, uid)
+            )
+        else:
+            cur.execute(
+                f"UPDATE {SCHEMA}.users SET full_name=%s, role=%s, group_id=%s WHERE id=%s",
+                (full_name, role_val, group_id, uid)
+            )
+        conn.commit()
+        conn.close()
+        return resp(200, {'message': 'Пользователь обновлён'})
+
+    if action == 'users_delete':
+        if not user or user['role'] != 'admin':
+            return resp(403, {'error': 'Только администратор'})
+        uid = body.get('id')
+        if not uid:
+            return resp(400, {'error': 'Укажите id'})
+        if int(uid) == user['id']:
+            return resp(400, {'error': 'Нельзя удалить себя'})
+        conn = get_conn()
+        cur = conn.cursor()
+        cur.execute(f"UPDATE {SCHEMA}.users SET login=login||'_deleted_'||id WHERE id=%s", (uid,))
+        cur.execute(f"UPDATE {SCHEMA}.users SET password_hash='__deleted__', full_name=full_name||' (удалён)', role='student', group_id=NULL WHERE id=%s", (uid,))
+        conn.commit()
+        conn.close()
+        return resp(200, {'message': 'Пользователь удалён'})
+
     if action == 'groups':
         conn = get_conn()
         cur = conn.cursor()

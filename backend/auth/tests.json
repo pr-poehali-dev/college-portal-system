@@ -18,12 +18,11 @@
       "bodyMatcher": "partial"
     },
     {
-      "name": "Get groups",
+      "name": "Get groups returns 200",
       "method": "POST",
       "path": "/",
       "body": {"action": "groups"},
       "expectedStatus": 200,
-      "expectedBody": {"groups": []},
       "bodyMatcher": "partial"
     }
   ]

@@ -40,6 +40,12 @@ export const api = {
   createUser: (data: { login: string; password: string; full_name: string; role: string; group_id?: number | null }) =>
     post(AUTH_URL, { action: 'users_create', ...data }),
 
+  updateUser: (data: { id: number; full_name: string; role: string; group_id?: number | null; password?: string }) =>
+    post(AUTH_URL, { action: 'users_update', ...data }),
+
+  deleteUser: (id: number) =>
+    post(AUTH_URL, { action: 'users_delete', id }),
+
   getGroups: () => post(AUTH_URL, { action: 'groups' }),
 
   createGroup: (name: string, year: number) =>
